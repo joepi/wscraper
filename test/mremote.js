@@ -8,8 +8,9 @@ util.log('[wscraper.js] scraping process has started');
 
 // load the script file (synch version)
 var script = fs.readFileSync('../scripts/googlefinance.js');
-var companies = ['/finance?q=apple', 'finance?q=cisco/', '/finance?q=microsoft/'];
-
+var companies = ['/finance?q=AAPL', 'finance?q=ILD/', '/finance?q=AMZN/'];
+var results =[];
+var values= "";
 // create a web scraper agent instance
 var agent = scraper.createAgent();
 
@@ -19,15 +20,23 @@ agent.on('start', function (n) {
 
 agent.on('done', function (url, result) {
 	util.log('[wscraper.js] data from ' + url);
-	// display the results	
+
+	results.push(result);
+
+
+
+	// display the results
 	var price = result.price;
+	//util.log(values);
 	util.log('[wscraper.js] current stock price is ' + price + ' USD');
 	// next item to process if any
-	agent.next();		
+	agent.next();
 });
 
 agent.on('stop', function (n) {
 	util.log('[wscraper.js] agent has ended; ' + n + ' path(s) remained to visit');
+	values=JSON.stringify(results);
+	util.log(values);
 });
 
 agent.on('abort', function (e) {
@@ -37,4 +46,4 @@ agent.on('abort', function (e) {
 });
 
 // run the web scraper
-agent.start('google.it', companies, script);
+agent.start('google.com', companies, script);
